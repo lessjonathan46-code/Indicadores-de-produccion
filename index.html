@@ -336,7 +336,7 @@
             width: 100%;
             border-collapse: collapse;
             font-size: 0.85rem;
-            min-width: 600px;
+            margin-top: 12px;
         }
 
         .historial-table th {
@@ -345,9 +345,6 @@
             padding: 8px 12px;
             text-align: left;
             white-space: nowrap;
-            position: sticky;
-            top: 0;
-            z-index: 10;
         }
 
         .historial-table td {
@@ -376,166 +373,25 @@
         .flex { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
         .mt-12 { margin-top: 12px; }
         .mb-8 { margin-bottom: 8px; }
-        
-        /* ==============================================
-           SCROLL INDIVIDUAL PARA TABLAS
-           ============================================== */
-        .table-scroll-container {
-            overflow: auto;
-            width: 100%;
-            max-height: 250px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            margin-top: 8px;
-        }
+        .table-wrap { overflow-x: auto; overflow-y: visible; }
 
-        .table-scroll-container::-webkit-scrollbar {
-            width: 8px;
+        /* Scroll personalizado para tablas */
+        .table-wrap::-webkit-scrollbar {
             height: 8px;
         }
 
-        .table-scroll-container::-webkit-scrollbar-track {
+        .table-wrap::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 4px;
         }
 
-        .table-scroll-container::-webkit-scrollbar-thumb {
+        .table-wrap::-webkit-scrollbar-thumb {
             background: var(--primary-mid);
             border-radius: 4px;
         }
 
-        .table-scroll-container::-webkit-scrollbar-thumb:hover {
+        .table-wrap::-webkit-scrollbar-thumb:hover {
             background: var(--primary);
-        }
-
-        .table-scroll-container {
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary-mid) #f1f1f1;
-        }
-
-        /* Contenedor principal del historial */
-        .historial-scroll-container {
-            overflow: auto;
-            width: 100%;
-            max-height: 500px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            padding: 10px;
-        }
-
-        .historial-scroll-container::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        .historial-scroll-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-
-        .historial-scroll-container::-webkit-scrollbar-thumb {
-            background: var(--primary-mid);
-            border-radius: 4px;
-        }
-
-        .historial-scroll-container::-webkit-scrollbar-thumb:hover {
-            background: var(--primary);
-        }
-
-        .historial-scroll-container {
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary-mid) #f1f1f1;
-        }
-
-        /* Cada item del historial */
-        .historial-item {
-            margin-bottom: 15px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 12px;
-        }
-
-        .historial-item:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-
-        .historial-item h4 {
-            margin-bottom: 6px;
-            color: var(--primary);
-            font-size: 14px;
-        }
-
-        .historial-item .table-scroll-container {
-            max-height: 180px;
-        }
-
-        /* Tabla de trazabilidad */
-        .trazabilidad-scroll {
-            overflow: auto;
-            width: 100%;
-            max-height: 200px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            margin-top: 8px;
-        }
-
-        .trazabilidad-scroll::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        .trazabilidad-scroll::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-
-        .trazabilidad-scroll::-webkit-scrollbar-thumb {
-            background: var(--primary-mid);
-            border-radius: 4px;
-        }
-
-        .trazabilidad-scroll::-webkit-scrollbar-thumb:hover {
-            background: var(--primary);
-        }
-
-        .trazabilidad-scroll {
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary-mid) #f1f1f1;
-        }
-
-        /* Resumen por tipo */
-        .resumen-scroll {
-            overflow: auto;
-            width: 100%;
-            max-height: 200px;
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            margin-top: 8px;
-        }
-
-        .resumen-scroll::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        .resumen-scroll::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 4px;
-        }
-
-        .resumen-scroll::-webkit-scrollbar-thumb {
-            background: var(--primary-mid);
-            border-radius: 4px;
-        }
-
-        .resumen-scroll::-webkit-scrollbar-thumb:hover {
-            background: var(--primary);
-        }
-
-        .resumen-scroll {
-            scrollbar-width: thin;
-            scrollbar-color: var(--primary-mid) #f1f1f1;
         }
 
         .kpi-grid {
@@ -774,6 +630,80 @@
             box-shadow: 0 4px 8px rgba(31, 56, 100, 0.3);
         }
 
+        /* Estilo para el contenedor de historial con scroll */
+        .historial-scroll-container {
+            overflow-x: auto;
+            overflow-y: visible;
+            width: 100%;
+        }
+
+        .historial-scroll-container::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .historial-scroll-container::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .historial-scroll-container::-webkit-scrollbar-thumb {
+            background: var(--primary-mid);
+            border-radius: 4px;
+        }
+
+        .historial-scroll-container::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        /* Estilo para el contenedor de la tabla de trazabilidad */
+        .trazabilidad-scroll {
+            overflow-x: auto;
+            overflow-y: visible;
+            width: 100%;
+        }
+
+        .trazabilidad-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .trazabilidad-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .trazabilidad-scroll::-webkit-scrollbar-thumb {
+            background: var(--primary-mid);
+            border-radius: 4px;
+        }
+
+        .trazabilidad-scroll::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
+        .resumen-scroll {
+            overflow-x: auto;
+            overflow-y: visible;
+            width: 100%;
+        }
+
+        .resumen-scroll::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        .resumen-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .resumen-scroll::-webkit-scrollbar-thumb {
+            background: var(--primary-mid);
+            border-radius: 4px;
+        }
+
+        .resumen-scroll::-webkit-scrollbar-thumb:hover {
+            background: var(--primary);
+        }
+
         @media (max-width: 992px) {
             .main-content {
                 flex-direction: column;
@@ -790,9 +720,6 @@
             }
             .filter-group .date-range {
                 flex-wrap: wrap;
-            }
-            .historial-scroll-container {
-                max-height: 400px;
             }
         }
 
@@ -816,12 +743,6 @@
             }
             .form-row {
                 grid-template-columns: 1fr;
-            }
-            .table-scroll-container {
-                max-height: 180px;
-            }
-            .historial-scroll-container {
-                max-height: 350px;
             }
         }
     </style>
@@ -1319,7 +1240,6 @@
             const tipoFilter = document.getElementById('tipoProductoFilter').value;
 
             try {
-                // Obtener órdenes de producción
                 let ordenesQuery = supabaseClient.from('fpr_001_orden_produccion').select('*').gte('fecha', start).lte('fecha', end);
                 if(tipoFilter !== 'todos') {
                     ordenesQuery = ordenesQuery.eq('tipo_producto', tipoFilter);
@@ -1327,32 +1247,26 @@
                 const { data: ordenes, error: errOrdenes } = await ordenesQuery;
                 if(errOrdenes) throw errOrdenes;
 
-                // Obtener registros diarios
                 let frdQuery = supabaseClient.from('frd_002_registro_diario').select('*').gte('fecha', start).lte('fecha', end);
                 const { data: frdData, error: errFrd } = await frdQuery;
                 if(errFrd) throw errFrd;
 
-                // Obtener desperdicios
                 let fdpQuery = supabaseClient.from('fdp_003_desperdicios').select('*').gte('fecha', start).lte('fecha', end);
                 const { data: fdpData, error: errFdp } = await fdpQuery;
                 if(errFdp) throw errFdp;
 
-                // Obtener paradas
                 let fpmQuery = supabaseClient.from('fpm_004_paradas_maquina').select('*').gte('fecha', start).lte('fecha', end);
                 const { data: fpmData, error: errFpm } = await fpmQuery;
                 if(errFpm) throw errFpm;
 
-                // Obtener mantenimientos
                 let fmtQuery = supabaseClient.from('fmt_005_mantenimiento').select('*').gte('fecha_registro', start).lte('fecha_registro', end);
                 const { data: fmtData, error: errFmt } = await fmtQuery;
                 if(errFmt) throw errFmt;
 
-                // Obtener producción de operarios
                 let fpoQuery = supabaseClient.from('fpo_007_produccion_operario').select('*').gte('fecha', start).lte('fecha', end);
                 const { data: fpoData, error: errFpo } = await fpoQuery;
                 if(errFpo) throw errFpo;
 
-                // Calcular KPI
                 const totalOrdenes = ordenes ? ordenes.length : 0;
                 let totalProd = 0, totalRech = 0, totalDesp = 0;
                 if(frdData) {
@@ -1376,12 +1290,11 @@
                 document.getElementById('kpiMantenimiento').textContent = fmtData ? fmtData.length : 0;
                 document.getElementById('kpiOperarios').textContent = fpoData ? fpoData.length : 0;
 
-                // Cargar gráficos
                 await Promise.all([
                     cargarTrazabilidad(start, end, ordenes),
-                    cargarCalidadArea(start, end, tipoFilter),
-                    cargarEvolucion(start, end, tipoFilter),
-                    cargarDesperdiciosArea(start, end, tipoFilter),
+                    cargarCalidadArea(start, end),
+                    cargarEvolucion(start, end),
+                    cargarDesperdiciosArea(start, end),
                     cargarResumenTipo(start, end)
                 ]);
 
@@ -1454,31 +1367,12 @@
             document.getElementById('trazabilidadTable').innerHTML = html;
         }
 
-        async function cargarCalidadArea(start, end, tipoFilter) {
-            let query = supabaseClient.from('frd_002_registro_diario').select('area, rollos_producidos, rollos_rechazo').gte('fecha', start).lte('fecha', end);
-            const { data, error } = await query;
-            if(error) throw error;
-
-            let datosFiltrados = data || [];
-            if(tipoFilter !== 'todos') {
-                const { data: ordenesTipo } = await supabaseClient
-                    .from('fpr_001_orden_produccion')
-                    .select('numero_orden')
-                    .eq('tipo_producto', tipoFilter)
-                    .gte('fecha', start)
-                    .lte('fecha', end);
-                
-                if(ordenesTipo && ordenesTipo.length > 0) {
-                    datosFiltrados = data || [];
-                } else {
-                    datosFiltrados = [];
-                }
-            }
-
+        async function cargarCalidadArea(start, end) {
+            const { data } = await supabaseClient.from('frd_002_registro_diario').select('area, rollos_producidos, rollos_rechazo').gte('fecha', start).lte('fecha', end);
             const areas = ['Rebobinado','Corte','Sellado','Etiquetado','Empaquetado'];
             const labels = [], valores = [], colores = [];
             areas.forEach(area => {
-                const rows = datosFiltrados.filter(r => r.area === area);
+                const rows = data ? data.filter(r => r.area === area) : [];
                 const prod = rows.reduce((s,r) => s + (r.rollos_producidos||0), 0);
                 const rech = rows.reduce((s,r) => s + (r.rollos_rechazo||0), 0);
                 const indice = prod > 0 ? ((prod - rech) / prod) * 100 : 0;
@@ -1506,30 +1400,11 @@
             });
         }
 
-        async function cargarEvolucion(start, end, tipoFilter) {
-            let query = supabaseClient.from('frd_002_registro_diario').select('fecha, rollos_producidos, rollos_rechazo').gte('fecha', start).lte('fecha', end).order('fecha');
-            const { data, error } = await query;
-            if(error) throw error;
-
-            let datosFiltrados = data || [];
-            if(tipoFilter !== 'todos') {
-                const { data: ordenesTipo } = await supabaseClient
-                    .from('fpr_001_orden_produccion')
-                    .select('numero_orden')
-                    .eq('tipo_producto', tipoFilter)
-                    .gte('fecha', start)
-                    .lte('fecha', end);
-                
-                if(ordenesTipo && ordenesTipo.length > 0) {
-                    datosFiltrados = data || [];
-                } else {
-                    datosFiltrados = [];
-                }
-            }
-
+        async function cargarEvolucion(start, end) {
+            const { data } = await supabaseClient.from('frd_002_registro_diario').select('fecha, rollos_producidos, rollos_rechazo').gte('fecha', start).lte('fecha', end).order('fecha');
             const map = {};
-            if(datosFiltrados) {
-                datosFiltrados.forEach(r => {
+            if(data) {
+                data.forEach(r => {
                     const d = r.fecha;
                     if(!map[d]) map[d] = { prod: 0, rech: 0 };
                     map[d].prod += r.rollos_producidos || 0;
@@ -1559,30 +1434,11 @@
             });
         }
 
-        async function cargarDesperdiciosArea(start, end, tipoFilter) {
-            let query = supabaseClient.from('fdp_003_desperdicios').select('area_generacion, peso_kg').gte('fecha', start).lte('fecha', end);
-            const { data, error } = await query;
-            if(error) throw error;
-
-            let datosFiltrados = data || [];
-            if(tipoFilter !== 'todos') {
-                const { data: ordenesTipo } = await supabaseClient
-                    .from('fpr_001_orden_produccion')
-                    .select('numero_orden')
-                    .eq('tipo_producto', tipoFilter)
-                    .gte('fecha', start)
-                    .lte('fecha', end);
-                
-                if(ordenesTipo && ordenesTipo.length > 0) {
-                    datosFiltrados = data || [];
-                } else {
-                    datosFiltrados = [];
-                }
-            }
-
+        async function cargarDesperdiciosArea(start, end) {
+            const { data } = await supabaseClient.from('fdp_003_desperdicios').select('area_generacion, peso_kg').gte('fecha', start).lte('fecha', end);
             const map = {};
-            if(datosFiltrados) {
-                datosFiltrados.forEach(r => {
+            if(data) {
+                data.forEach(r => {
                     const a = r.area_generacion || 'Otro';
                     map[a] = (map[a] || 0) + (r.peso_kg || 0);
                 });
@@ -1694,7 +1550,7 @@
                 if(error) throw error;
                 if(!data || data.length === 0) { container.innerHTML = '<div class="empty-state">Sin registros históricos.</div>'; return; }
                 const keys = Object.keys(data[0]).filter(k => !['id','created_at'].includes(k));
-                let html = `<h4 style="margin-top:12px;">Últimos 20 registros</h4><div class="table-scroll-container"><table class="historial-table"><thead><tr>${keys.map(k => `<th>${k}</th>`).join('')}</tr></thead><tbody>`;
+                let html = `<h4 style="margin-top:12px;">Últimos 20 registros</h4><div class="table-wrap"><table class="historial-table"><thead><tr>${keys.map(k => `<th>${k}</th>`).join('')}</tr></thead><tbody>`;
                 data.slice(0,20).forEach(row => {
                     html += `<tr>${keys.map(k => `<td>${row[k] || '-'}</td>`).join('')}</tr>`;
                 });
@@ -1728,11 +1584,12 @@
                 allData.forEach(({ code, label, data }) => {
                     if(data.length === 0) return;
                     const keys = Object.keys(data[0]).filter(k => !['id','created_at'].includes(k));
-                    html += `<div class="historial-item"><h4>${code} · ${label}</h4><div class="table-scroll-container"><table class="historial-table"><thead><tr>${keys.map(k => `<th>${k}</th>`).join('')}</tr></thead><tbody>`;
+                    html += `<h4 style="margin-top:20px;color:var(--primary);">${code} · ${label}</h4>`;
+                    html += `<div class="table-wrap"><table class="historial-table"><thead><tr>${keys.map(k => `<th>${k}</th>`).join('')}</tr></thead><tbody>`;
                     data.forEach(row => {
                         html += `<tr>${keys.map(k => `<td>${row[k] || '-'}</td>`).join('')}</tr>`;
                     });
-                    html += `</tbody></table></div></div>`;
+                    html += `</tbody></table></div>`;
                 });
                 container.innerHTML = html;
             } catch(err) {
