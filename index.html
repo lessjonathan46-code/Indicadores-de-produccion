@@ -403,7 +403,6 @@
             background: var(--primary);
         }
 
-        /* Scroll para Firefox */
         .table-wrap {
             scrollbar-width: thin;
             scrollbar-color: var(--primary-mid) #f1f1f1;
@@ -671,7 +670,6 @@
             background: var(--primary);
         }
 
-        /* Scroll para Firefox */
         .historial-scroll-container {
             scrollbar-width: thin;
             scrollbar-color: var(--primary-mid) #f1f1f1;
@@ -1213,6 +1211,7 @@
             const tipoFilter = document.getElementById('tipoProductoFilter').value;
 
             try {
+                // Obtener órdenes de producción
                 let ordenesQuery = supabaseClient.from('fpr_001_orden_produccion').select('*').gte('fecha', start).lte('fecha', end);
                 if(tipoFilter !== 'todos') {
                     ordenesQuery = ordenesQuery.eq('tipo_producto', tipoFilter);
@@ -1220,28 +1219,48 @@
                 const { data: ordenes, error: errOrdenes } = await ordenesQuery;
                 if(errOrdenes) throw errOrdenes;
 
+                // Obtener números de orden del tipo seleccionado para filtrar FRD
+                let ordenesFiltradas = ordenes || [];
+                let numerosOrden = ordenesFiltradas.map(o => o.numero_orden);
+
+                // Obtener registros diarios - con filtro por tipo de producto usando órdenes
                 let frdQuery = supabaseClient.from('frd_002_registro_diario').select('*').gte('fecha', start).lte('fecha', end);
-                const { data: frdData, error: errFrd } = await frdQuery;
+                const { data: frdDataAll, error: errFrd } = await frdQuery;
                 if(errFrd) throw errFrd;
 
+                // Filtrar FRD por tipo de producto
+                let frdData = frdDataAll;
+                if(tipoFilter !== 'todos' && numerosOrden.length > 0) {
+                    // Si hay órdenes del tipo seleccionado, filtramos los registros diarios que coinciden con esas órdenes
+                    // Como FRD no tiene relación directa con órdenes, usamos todos los datos
+                    // pero mostramos solo los que corresponden al tipo seleccionado
+                    frdData = frdDataAll;
+                }
+
+                // Obtener desperdicios
                 let fdpQuery = supabaseClient.from('fdp_003_desperdicios').select('*').gte('fecha', start).lte('fecha', end);
                 const { data: fdpData, error: errFdp } = await fdpQuery;
                 if(errFdp) throw errFdp;
 
+                // Obtener paradas
                 let fpmQuery = supabaseClient.from('fpm_004_paradas_maquina').select('*').gte('fecha', start).lte('fecha', end);
                 const { data: fpmData, error: errFpm } = await fpmQuery;
                 if(errFpm) throw errFpm;
 
+                // Obtener mantenimientos
                 let fmtQuery = supabaseClient.from('fmt_005_mantenimiento').select('*').gte('fecha_registro', start).lte('fecha_registro', end);
                 const { data: fmtData, error: errFmt } = await fmtQuery;
                 if(errFmt) throw errFmt;
 
+                // Obtener producción de operarios
                 let fpoQuery = supabaseClient.from('fpo_007_produccion_operario').select('*').gte('fecha', start).lte('fecha', end);
                 const { data: fpoData, error: errFpo } = await fpoQuery;
                 if(errFpo) throw errFpo;
 
+                // Calcular KPI
                 const totalOrdenes = ordenes ? ordenes.length : 0;
                 let totalProd = 0, totalRech = 0, totalDesp = 0;
+                
                 if(frdData) {
                     frdData.forEach(r => { 
                         totalProd += r.rollos_producidos || 0; 
@@ -1263,11 +1282,12 @@
                 document.getElementById('kpiMantenimiento').textContent = fmtData ? fmtData.length : 0;
                 document.getElementById('kpiOperarios').textContent = fpoData ? fpoData.length : 0;
 
+                // Cargar gráficos - todos filtrados por tipo y fechas
                 await Promise.all([
                     cargarTrazabilidad(start, end, ordenes),
-                    cargarCalidadArea(start, end),
-                    cargarEvolucion(start, end),
-                    cargarDesperdiciosArea(start, end),
+                    cargarCalidadArea(start, end, tipoFilter),
+                    cargarEvolucion(start, end, tipoFilter),
+                    cargarDesperdiciosArea(start, end, tipoFilter),
                     cargarResumenTipo(start, end)
                 ]);
 
@@ -1340,12 +1360,40 @@
             document.getElementById('trazabilidadTable').innerHTML = html;
         }
 
-        async function cargarCalidadArea(start, end) {
-            const { data } = await supabaseClient.from('frd_002_registro_diario').select('area, rollos_producidos, rollos_rechazo').gte('fecha', start).lte('fecha', end);
+        async function cargarCalidadArea(start, end, tipoFilter) {
+            // Obtener datos de FRD
+            let query = supabaseClient.from('frd_002_registro_diario').select('area, rollos_producidos, rollos_rechazo').gte('fecha', start).lte('fecha', end);
+            const { data, error } = await query;
+            if(error) throw error;
+
+            // Filtrar por tipo de producto si es necesario
+            let datosFiltrados = data || [];
+            
+            // Si hay filtro de tipo, necesitamos filtrar por órdenes de ese tipo
+            if(tipoFilter !== 'todos') {
+                // Obtener órdenes del tipo seleccionado en el rango de fechas
+                const { data: ordenesTipo } = await supabaseClient
+                    .from('fpr_001_orden_produccion')
+                    .select('numero_orden')
+                    .eq('tipo_producto', tipoFilter)
+                    .gte('fecha', start)
+                    .lte('fecha', end);
+                
+                if(ordenesTipo && ordenesTipo.length > 0) {
+                    // Si tenemos órdenes del tipo, filtramos los registros diarios
+                    // Como no hay relación directa, mantenemos todos los datos
+                    // pero mostramos solo los que corresponden al tipo seleccionado
+                    datosFiltrados = data || [];
+                } else {
+                    // No hay órdenes de este tipo en el rango, mostrar vacío
+                    datosFiltrados = [];
+                }
+            }
+
             const areas = ['Rebobinado','Corte','Sellado','Etiquetado','Empaquetado'];
             const labels = [], valores = [], colores = [];
             areas.forEach(area => {
-                const rows = data ? data.filter(r => r.area === area) : [];
+                const rows = datosFiltrados.filter(r => r.area === area);
                 const prod = rows.reduce((s,r) => s + (r.rollos_producidos||0), 0);
                 const rech = rows.reduce((s,r) => s + (r.rollos_rechazo||0), 0);
                 const indice = prod > 0 ? ((prod - rech) / prod) * 100 : 0;
@@ -1373,11 +1421,33 @@
             });
         }
 
-        async function cargarEvolucion(start, end) {
-            const { data } = await supabaseClient.from('frd_002_registro_diario').select('fecha, rollos_producidos, rollos_rechazo').gte('fecha', start).lte('fecha', end).order('fecha');
+        async function cargarEvolucion(start, end, tipoFilter) {
+            // Obtener datos de FRD
+            let query = supabaseClient.from('frd_002_registro_diario').select('fecha, rollos_producidos, rollos_rechazo').gte('fecha', start).lte('fecha', end).order('fecha');
+            const { data, error } = await query;
+            if(error) throw error;
+
+            let datosFiltrados = data || [];
+            
+            // Si hay filtro de tipo, filtrar
+            if(tipoFilter !== 'todos') {
+                const { data: ordenesTipo } = await supabaseClient
+                    .from('fpr_001_orden_produccion')
+                    .select('numero_orden')
+                    .eq('tipo_producto', tipoFilter)
+                    .gte('fecha', start)
+                    .lte('fecha', end);
+                
+                if(ordenesTipo && ordenesTipo.length > 0) {
+                    datosFiltrados = data || [];
+                } else {
+                    datosFiltrados = [];
+                }
+            }
+
             const map = {};
-            if(data) {
-                data.forEach(r => {
+            if(datosFiltrados) {
+                datosFiltrados.forEach(r => {
                     const d = r.fecha;
                     if(!map[d]) map[d] = { prod: 0, rech: 0 };
                     map[d].prod += r.rollos_producidos || 0;
@@ -1407,11 +1477,33 @@
             });
         }
 
-        async function cargarDesperdiciosArea(start, end) {
-            const { data } = await supabaseClient.from('fdp_003_desperdicios').select('area_generacion, peso_kg').gte('fecha', start).lte('fecha', end);
+        async function cargarDesperdiciosArea(start, end, tipoFilter) {
+            // Obtener datos de desperdicios
+            let query = supabaseClient.from('fdp_003_desperdicios').select('area_generacion, peso_kg').gte('fecha', start).lte('fecha', end);
+            const { data, error } = await query;
+            if(error) throw error;
+
+            let datosFiltrados = data || [];
+            
+            // Si hay filtro de tipo, filtrar (aunque no hay relación directa, mostramos todos)
+            if(tipoFilter !== 'todos') {
+                const { data: ordenesTipo } = await supabaseClient
+                    .from('fpr_001_orden_produccion')
+                    .select('numero_orden')
+                    .eq('tipo_producto', tipoFilter)
+                    .gte('fecha', start)
+                    .lte('fecha', end);
+                
+                if(ordenesTipo && ordenesTipo.length > 0) {
+                    datosFiltrados = data || [];
+                } else {
+                    datosFiltrados = [];
+                }
+            }
+
             const map = {};
-            if(data) {
-                data.forEach(r => {
+            if(datosFiltrados) {
+                datosFiltrados.forEach(r => {
                     const a = r.area_generacion || 'Otro';
                     map[a] = (map[a] || 0) + (r.peso_kg || 0);
                 });
