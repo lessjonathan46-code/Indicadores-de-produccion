@@ -31,7 +31,7 @@
             --text-muted: #6B7A8D;
             --shadow: 0 4px 12px rgba(0,0,0,0.06);
             --radius: 12px;
-            --sidebar-width: 240px;
+            --sidebar-width: 220px;
             --header-height: 70px;
         }
 
@@ -47,12 +47,15 @@
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            width: 100%;
+            max-width: 100vw;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
             padding: 10px 15px;
+            width: 100%;
         }
 
         header {
@@ -64,6 +67,7 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            width: 100%;
         }
 
         .header-content {
@@ -116,25 +120,28 @@
             display: flex;
             gap: 15px;
             margin-top: 15px;
+            width: 100%;
         }
 
         .sidebar {
-            flex: 1;
+            flex: 0 0 var(--sidebar-width);
+            max-width: var(--sidebar-width);
             background-color: white;
             border-radius: 10px;
             padding: 15px;
             box-shadow: 0 4px 6px rgba(44, 62, 80, 0.08);
             border-left: 4px solid var(--primary);
-            min-width: 180px;
-            max-width: 240px;
         }
 
         .main-panel {
-            flex: 3;
+            flex: 1;
+            min-width: 0;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            min-width: 0;
+            width: 100%;
+            max-width: 100%;
+            overflow: hidden;
         }
 
         .nav-menu {
@@ -180,6 +187,8 @@
             box-shadow: 0 4px 6px rgba(44, 62, 80, 0.05);
             transition: transform 0.3s, box-shadow 0.3s;
             border-top: 3px solid var(--primary-light);
+            width: 100%;
+            overflow: hidden;
         }
 
         .card h2 {
@@ -815,8 +824,8 @@
                 flex-direction: column;
             }
             .sidebar {
+                flex: 1 1 100%;
                 max-width: 100%;
-                min-width: unset;
                 border-left: none;
                 border-top: 4px solid var(--primary);
             }
